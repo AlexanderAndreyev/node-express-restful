@@ -5,13 +5,8 @@ const passport = require('passport');
 
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) return next();
-  res.send('Please login');
-
+  res.status(401).send('Please login');
 };
-
-router.get('/', (req, res) => {
-  res.send('respond with a resource');
-});
 
 router.get('/profile', isLoggedIn, (req, res) => {
   res.send('You can see the profile');

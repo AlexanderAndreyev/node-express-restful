@@ -12,10 +12,12 @@ const swaggerDocument = require('./swagger.json');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const products = require('./routes/products');
 const passportConfig = require('./config/auth');
 
 const app = express();
 
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/restapi');
 
 passportConfig(passport);
@@ -42,6 +44,7 @@ app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/api', products);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
