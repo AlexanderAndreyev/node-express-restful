@@ -1,19 +1,12 @@
 const express = require('express');
-const router = express.Router();
-
 const passport = require('passport');
+const UserController = require('../../../controllers/user.controller');
 
-router.post('/logout', (req, res) => {
-  req.logout();
-  res.sendStatus(201);
-});
+const router = express.Router();
+const userController = new UserController();
 
-router.post('/login', passport.authenticate('local-login'), (req, res) => {
-  res.send('You are logged in');
-});
-
-router.post('/signup', passport.authenticate('local-signup'), (req, res) => {
-  res.send('You are registered');
-});
+router.post('/login', passport.authenticate('local-login'), userController.login);
+router.post('/logout', userController.logout);
+router.post('/signup', passport.authenticate('local-signup'), userController.signup);
 
 module.exports = router;
