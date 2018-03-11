@@ -10,9 +10,8 @@ const passport = require('passport');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
-const products = require('./routes/products');
+const apiV1 = require('./routes/api/v1');
+
 const passportConfig = require('./config/auth');
 
 const app = express();
@@ -42,9 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/api', products);
+app.use('/api/rest', apiV1);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
