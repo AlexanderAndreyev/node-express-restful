@@ -1,4 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
+const uuid = require('uuid/v4');
 
 const User = require('../models/user');
 
@@ -20,10 +21,8 @@ module.exports = (passport) => {
       passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
     }, (req, email, password, done) => {
       if (email) {
-        console.log(email);
         email = email.toLowerCase(); // Use lower-case e-mails to avoid case-sensitive e-mail matching
         User.findOne({ email :  email }, (err, user) => {
-          console.log(user);
           if (err)
             return done(err);
           if (!user)
@@ -53,6 +52,7 @@ module.exports = (passport) => {
               const newUser = new User();
               newUser.email = email;
               newUser.password = newUser.generateHash(password);
+              newUser.uuid = uuid();
               newUser.save((err) => {
                 if (err) return done(err);
                 return done(null, newUser);

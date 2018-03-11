@@ -10,9 +10,9 @@ const isLoggedIn = (req, res, next) => {
 };
 
 router.get('/products', isLoggedIn, productController.getProducts);
-router.get('/products/:id', isLoggedIn, productController.getProduct);
+router.get('/products/:uuid', isLoggedIn, productController.getProduct);
 router.post('/products', isLoggedIn, productController.createProduct);
-router.put('/products/:id', isLoggedIn, productController.updateProduct);
-router.delete('/products/:id', isLoggedIn, productController.deleteProduct);
+router.put('/products/:uuid', isLoggedIn, productController.updateProduct);
+router.delete('/products/:uuid', isLoggedIn, productController.deleteProduct);
 
 module.exports = router;

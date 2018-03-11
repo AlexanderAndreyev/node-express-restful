@@ -1,37 +1,39 @@
+const uuid = require('uuid/v4');
 const Product = require('../models/product');
 
 class ProductController {
 
   createProduct(req, res) {
+    const newProduct = { ...req.body, uuid: uuid() };
     Product
-      .create(req.body)
+      .create(newProduct)
       .then(product => res.json(product))
-      .catch(err => res.status(500).json({ errors: { global: "Something went wrong" }}));
+      .catch(err => res.status(500).json({ errors: { global: err.message }}));
   }
 
   deleteProduct(req, res) {
     Product
-      .findByIdAndRemove({ _id: req.params.id })
+      .findByIdAndRemove({ uuid: req.params.uuid }, { _id: 0 })
       .then(product => res.json(product));
   }
 
   getProducts(req, res) {
     Product
-      .find({})
+      .find({}, { _id: 0 })
       .then(products => res.json(products));
   }
 
   getProduct(req, res) {
     Product
-      .findOne({ _id: req.params.id })
+      .findOne({ uuid: req.params.uuid }, { _id: 0 })
       .then(product => res.json(product));
   }
 
   updateProduct(req, res) {
     Product
-      .findByIdAndUpdate({ _id: req.params.id }, req.body)
+      .findOneAndUpdate({ uuid: req.params.uuid }, req.body, { new: true })
       .then(product => res.json(product))
-      .catch(err => res.status(500).json({ errors: { global: "Something went wrong" }}));
+      .catch(err => res.status(500).json({ errors: { global: err.message }}));
   }
 
 }
