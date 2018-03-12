@@ -43,6 +43,23 @@ app.use('/api/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api/rest', apiV1);
 
+app.get('/', (req, res) => {
+  res.render('layout.pug');
+});
+
+app.get('/profile', (req, res) => {
+  res.render('profile.pug');
+});
+
+// Fully access to gmail provided
+app.get('/auth/google', passport.authenticate('google', { scope : ['https://mail.google.com/', 'profile', 'email'] }));
+
+// the callback after google has authenticated the user
+app.get('/auth/google/callback',
+  passport.authenticate('google', {failureRedirect: '/'}), (req, res) => {
+    res.redirect('/profile');
+  });
+
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
@@ -54,7 +71,7 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { message: err.message });
 });
 
 module.exports = app;

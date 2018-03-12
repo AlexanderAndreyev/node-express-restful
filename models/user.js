@@ -13,6 +13,12 @@ const UserSchema = mongoose.Schema({
   uuid: {
     type: String,
     required: true
+  },
+  google: {
+    id: String,
+    token: String,
+    email: String,
+    name: String
   }
 });
 

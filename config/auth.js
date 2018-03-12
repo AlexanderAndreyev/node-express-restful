@@ -1,5 +1,7 @@
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const uuid = require('uuid/v4');
+const googleConfig = require('../config/google.credentials');
 
 const User = require('../models/user');
 
@@ -65,6 +67,28 @@ module.exports = (passport) => {
           return done(null, req.user);
         }
 
+    }));
+
+  passport.use(new GoogleStrategy({
+      clientID: googleConfig.googleAuth.clientID,
+      clientSecret: googleConfig.googleAuth.clientSecret,
+      callbackURL: googleConfig.googleAuth.callbackURL,
+    }, (token, refreshToken, profile, done) => {
+        const googleData = {
+          google: {
+            id: profile.id,
+            token: token,
+            email: profile.emails[0].value,
+            name: profile.displayName
+          }
+        };
+        User.findOneAndUpdate({ 'email' : profile.emails[0].value }, googleData, (err, user) => {
+          if (err)
+            return done(err);
+          if (user) {
+            return done(null, user);
+          }
+        });
 
     }));
 
